@@ -1,21 +1,33 @@
 import sys
 import tkinter as tk
-from pynput import mouse
+import pyautogui as pg
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 600, 400
 BG_COLOR = "#D4E2EC"
+REFRESH_TIME = 100
 
 
 if __name__ == '__main__':
+    def rgb_to_hex(r, g, b):
+        return '#' + ('{:X}{:X}{:X}').format(r, g, b)
+
     def get_coords():
         global mouse_x
         global mouse_y
-        mouse_x, mouse_y = mouse_controller.position
-        window.after(1000, get_coords)
+        mouse_x, mouse_y = pg.position()
+        window.after(REFRESH_TIME, get_coords)
+
+    def get_pixel(x, y):
+        global color_hexcode
+        im = pg.screenshot()
+        color_hexcode = im.getpixel((x, y))
+        color_hexcode = rgb_to_hex(int(color_hexcode[0]), int(color_hexcode[1]), int(color_hexcode[2]))
+        color_label.config(text=f"Color hexcode: {color_hexcode}")
+        color_canvas.config(bg=color_hexcode)
+        window.after(REFRESH_TIME, get_pixel, mouse_x, mouse_y)
 
 
     mouse_x, mouse_y = 0, 0
-    mouse_controller = mouse.Controller()
     color_hexcode = "#FFFFFF"
 
     # sets up window
@@ -38,4 +50,5 @@ if __name__ == '__main__':
 
 
     get_coords()
+    get_pixel(mouse_x, mouse_y)
     window.mainloop()
