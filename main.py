@@ -7,7 +7,14 @@ BG_COLOR = "#D4E2EC"
 
 
 if __name__ == '__main__':
+    def get_coords():
+        global mouse_x
+        global mouse_y
+        mouse_x, mouse_y = mouse_controller.position
+        window.after(1000, get_coords)
 
+
+    mouse_x, mouse_y = 0, 0
     mouse_controller = mouse.Controller()
     color_hexcode = "#FFFFFF"
 
@@ -29,4 +36,6 @@ if __name__ == '__main__':
     submit_btn = tk.Button(window, text="Copy hexcode to clipboard", background=BG_COLOR, activebackground=BG_COLOR)
     submit_btn.pack(padx=20, pady=20)
 
+
+    get_coords()
     window.mainloop()
